@@ -13,6 +13,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
+                    credentialsId: 'github-credentials'
                     url: 'https://github.com/Naylor.Robinson/eks-wordpress-microservice.git'
             }
         }
