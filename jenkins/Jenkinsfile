@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION      = 'us-east-1'
         CLUSTER_NAME    = 'enterprise-cluster'
         AWS_ACCESS_KEY_ID = credentials('aws_acces_key')
-        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
     }
 
     stages {
