@@ -27,7 +27,7 @@ pipeline {
             steps {
                 dir('terraform') {
                     sh 'terraform init'
-                    sh 'terraform apply -auto-approve'
+                    sh 'aws eks --region us-east-1 update-kubeconfig --name enterprise-cluster''
                 }
             }
         }
