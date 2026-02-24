@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION      = 'us-east-1'
-        CLUSTER_NAME    = 'enterprise-cluster'
-        AWS_ACCESS_KEY_ID = credentials('aws_acces_key')
+        AWS_REGION            = 'us-east-1'
+        CLUSTER_NAME          = 'enterprise-cluster'
+        AWS_ACCESS_KEY_ID     = credentials('aws_acces_key')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
     }
 
@@ -12,10 +12,14 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git(
-                    branch: 'main',
-                    credentialsId: 'github-credentials'
-                    url: 'https://github.com/NaylorRobinson/eks-wordpress-microservice.git'
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/NaylorRobinson/eks-wordpress-microservice.git',
+                        credentialsId: 'github-credentials'
+                    ]]
+                ])
             }
         }
 
