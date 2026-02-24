@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION      = 'us-east-1'
+        CLUSTER_NAME    = 'enterprise-cluster'
+        AWS_CREDENTIALS = credentials('aws-credentials')
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Naylor.Robinson/eks-wordpress-microservice.git'
+            }
+        }
+
+        stage('Terraform Init & Apply') {
+            steps {
+                dir('terraform') {
+                    sh 'terraform init'
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+
+        stage('Update Kubeconfig') {
+            steps {
+                sh 'aws eks --region $AWS_REGION update-kubeconfig --name $CLUSTER_NAME'
+            }
+        }
+
+        stage('Deploy with Helm') {
+            steps {
+                sh 'helm upgrade --install my-microservice ./helm/my-microservice'
+            }
+        }
+
+        stage('Apply HPA') {
+            steps {
+                sh 'kubectl apply -f k8s/hpa.yaml'
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Pipeline failed. Check logs above.'
+        }
+    }
+}
