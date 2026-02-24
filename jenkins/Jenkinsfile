@@ -27,14 +27,14 @@ pipeline {
             steps {
                 dir('terraform') {
                     sh 'terraform init'
-                    sh 'aws eks --region us-east-1 update-kubeconfig --name enterprise-cluster''
+                    sh 'aws eks --region us-east-1 update-kubeconfig --name enterprise-cluster'
                 }
             }
         }
 
         stage('Update Kubeconfig') {
             steps {
-                sh 'aws eks --region $AWS_REGION update-kubeconfig --name $CLUSTER_NAME'
+                sh 'aws eks --region us-east-1 update-kubeconfig --name enterprise-cluster'
             }
         }
 
