@@ -146,7 +146,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-persistance:
+persistence:
   enabled: true
   # This is for setting up the Persistent Volume Claim more information can be found here: https
   # storageClass: "my-storage-class"
