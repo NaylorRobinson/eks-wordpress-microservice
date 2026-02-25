@@ -24,66 +24,24 @@ spec:
               containerPort: 80
               protocol: TCP
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            httpGet:
+              path: /
+              port: http
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            httpGet:
+              path: /
+              port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 300m
+              memory: 256Mi
           volumeMounts:
             - name: wordpress-storage
               mountPath: /var/www/html
       volumes:
         - name: wordpress-storage
-          {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "my-microservices.fullname" . }}-pvc
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
-```
-4. Click **Commit new file**
-
----
-
-**Step 5 — Create `service.yaml`:**
-1. Click **Add file → Create new file**
-2. Filename:
-```
-templates/service.yaml
-{{- if .Values.serviceAccount.create -}}
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ include "my-microservices.serviceAccountName" . }}
-  labels:
-    {{- include "my-microservices.labels" . | nindent 4 }}
-  {{- with .Values.serviceAccount.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
-{{- end }}
-```
-4. Click **Commit new file**
-
----
-
-**Step 7 — Create `pvc.yaml`:**
-1. Click **Add file → Create new file**
-2. Filename:
-```
-templates/pvc.yaml
-{{- if .Values.persistence.enabled }}
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ include "my-microservices.fullname" . }}-pvc
-  labels:
-    {{- include "my-microservices.labels" . | nindent 4 }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.persistence.size }}
-{{- end }}
