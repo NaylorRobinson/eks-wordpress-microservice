@@ -8,8 +8,3 @@ spec:
   resources:
     requests:
       storage: 10Gi
-```
-
-Then also create:
-```
-helm/my-microservices/templates/serviceaccount.yaml
