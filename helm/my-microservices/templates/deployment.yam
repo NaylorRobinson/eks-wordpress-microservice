@@ -50,3 +50,40 @@ spec:
 2. Filename:
 ```
 templates/service.yaml
+{{- if .Values.serviceAccount.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "my-microservices.serviceAccountName" . }}
+  labels:
+    {{- include "my-microservices.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+{{- end }}
+```
+4. Click **Commit new file**
+
+---
+
+**Step 7 — Create `pvc.yaml`:**
+1. Click **Add file → Create new file**
+2. Filename:
+```
+templates/pvc.yaml
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "my-microservices.fullname" . }}-pvc
+  labels:
+    {{- include "my-microservices.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+{{- end }}
