@@ -40,7 +40,7 @@ pipeline {
 
         stage('Deploy with Helm') {
             steps {
-                sh 'helm upgrade --install my-microservice ./helm/my-microservice'
+                sh 'helm upgrade --install my-microservice ./helm/my-microservices'
             }
         }
 
